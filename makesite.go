@@ -3,27 +3,36 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"strings"
 )
-type Header struct {
-	Content string
+type Content struct {
+	Header string
+	Paragraphs []para
 }
-type Paragraph struct {
-	Section []string
+type para struct {
+	Data string
 }
 // Read in the contents of the provided first-post.txt file
-func readFile() string {
+func readFile() []string {
 	fileContents, err := ioutil.ReadFile("first-post.txt")
 	if err != nil {
 		panic(err)
 	}
-	return(string(fileContents))
+	return (strings.Split(string(fileContents), "\n"))
 }
-//Edit the provided HTML template (`template.tmpl`)
-//to display the contents of `first-post.txt`.
-func updateTemplate(fileContents string) {
 
-}
+
 func main() {
 	fmt.Println("Hello, world!")
-	fmt.Print(readFile())
+	fileData := readFile()
+	//Setup header
+	header := fileData[0]
+	//Setup para
+	var bodyContent []para
+	for count := 1; count < len(fileData); count++ {
+		newPara := para{Data: fileData[count]}
+		bodyContent = append(bodyContent, newPara)
+	}
+	structuredContent := Content{Header: header, Paragraphs: bodyContent}
+	
 }

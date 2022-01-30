@@ -5,9 +5,12 @@
   <title>Untitled Custom SSG</title>
 </head>
 <body>
-  <h1> </h1>
-  <p></p>
-  <p></p>
-  <p></p>
+  <h1>Header: {{ .Header }} </h1>
+  <br />
+  {{ with .Paragraphs }}
+    {{ range . }}
+      <p>{{ .Data }}</p>
+    {{ end }}
+  {{ end }}
 </body>
 </html>
