@@ -34,5 +34,5 @@ func main() {
 		bodyContent = append(bodyContent, newPara)
 	}
 	structuredContent := Content{Header: header, Paragraphs: bodyContent}
-	
+	fmt.Print(structuredContent)
 }
