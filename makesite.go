@@ -14,8 +14,8 @@ type para struct {
 	Data string
 }
 // Read in the contents of the provided first-post.txt file
-func readFile() []string {
-	fileContents, err := ioutil.ReadFile("first-post.txt")
+func readFile(fileName string) []string {
+	fileContents, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		panic(err)
 	}
@@ -24,7 +24,7 @@ func readFile() []string {
 
 
 func main() {
-	fileData := readFile()
+	fileData := readFile("first-post.txt")
 	//Setup header
 	header := fileData[0]
 	//Setup para
