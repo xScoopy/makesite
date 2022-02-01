@@ -39,7 +39,7 @@ func main() {
 	
 
 	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
-	newFile, err := os.Create("new.html")
+	newFile, err := os.Create("first-post.html")
 	if err != nil {
 		  panic(err)
 	}
