@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -25,7 +24,6 @@ func readFile() []string {
 
 
 func main() {
-	fmt.Println("Hello, world!")
 	fileData := readFile()
 	//Setup header
 	header := fileData[0]
