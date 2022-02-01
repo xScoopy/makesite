@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 type Content struct {
@@ -34,5 +36,12 @@ func main() {
 		bodyContent = append(bodyContent, newPara)
 	}
 	structuredContent := Content{Header: header, Paragraphs: bodyContent}
-	fmt.Print(structuredContent)
+	
+
+	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
+	newFile, err := os.Create("new.html")
+	if err != nil {
+		  panic(err)
+	}
+	t.Execute(newFile, structuredContent)
 }
