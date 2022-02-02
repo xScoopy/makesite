@@ -39,15 +39,17 @@ func main() {
 	fileData := readFile(*fileToRead)
 	//Setup header
 	header := fileData[0]
-	//Setup para
+	//Setup paragraphs for body content
 	var bodyContent []para
 	for count := 1; count < len(fileData); count++ {
 		newPara := para{Data: fileData[count]}
 		bodyContent = append(bodyContent, newPara)
 	}
+
+	//initialize content struct for passing to template
 	structuredContent := Content{Header: header, Paragraphs: bodyContent}
 	
-
+	//parse template and write to a new html file with data injected to template
 	templateParse := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
 	newFile, err := os.Create(outputFile)
 	if err != nil {
