@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -22,9 +23,20 @@ func readFile(fileName string) []string {
 	return (strings.Split(string(fileContents), "\n"))
 }
 
+func savePage(newFileName string) {
+
+}
 
 func main() {
-	fileData := readFile("first-post.txt")
+	//use flag to get input data
+	fileToRead := flag.String("file", "first-post.txt", "File to parse to html")
+	flag.Parse()
+    
+	//generate output file name
+	outputFileMinusExt := strings.Split(*fileToRead, ".")[0]
+	outputFile := outputFileMinusExt + ".html"
+
+	fileData := readFile(*fileToRead)
 	//Setup header
 	header := fileData[0]
 	//Setup para
@@ -36,10 +48,10 @@ func main() {
 	structuredContent := Content{Header: header, Paragraphs: bodyContent}
 	
 
-	t := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
-	newFile, err := os.Create("first-post.html")
+	templateParse := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
+	newFile, err := os.Create(outputFile)
 	if err != nil {
 		  panic(err)
 	}
-	t.Execute(newFile, structuredContent)
+	templateParse.Execute(newFile, structuredContent)
 }
