@@ -9,7 +9,9 @@
   <br />
   {{ with .Paragraphs }}
     {{ range . }}
-      <p>{{ .Data }}</p>
+      {{ if .Data }}
+        <p>{{ .Data }}</p>
+      {{ end }}
     {{ end }}
   {{ end }}
 </body>
