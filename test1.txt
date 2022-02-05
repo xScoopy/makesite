@@ -1,0 +1,7 @@
+Test header 1
+
+This is a test page!
+My script separates things like this into p tags.
+To make it consistent for webpages to display content. 
+
+Through the use of a static site generator!
