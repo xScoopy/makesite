@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -43,7 +42,25 @@ func main() {
 	}
 	for _, file := range files {
 		if filepath.Ext(file.Name()) == ".txt" {
-			fmt.Printf("%v\n", file.Name())
+			outputfileHtml := strings.Split(file.Name(), ".")[0] + ".html"
+			txtFile := strings.Split(file.Name(), ".")[0]
+			fileData := readFile(txtFile)
+			header := fileData[0]
+			//Setup paragraphs for body content
+			var bodyContent []para
+			for count := 1; count < len(fileData); count++ {
+				newPara := para{Data: fileData[count]}
+				bodyContent = append(bodyContent, newPara)
+			}
+		
+			//initialize content struct for passing to template
+			structuredContent := Content{Header: header, Paragraphs: bodyContent}
+			templateParse := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
+			newFile, err := os.Create(outputfileHtml)
+			if err != nil {
+				  panic(err)
+			}
+			templateParse.Execute(newFile, structuredContent)
 		}
 	}
 	//generate output file name
