@@ -43,7 +43,7 @@ func main() {
 	for _, file := range files {
 		if filepath.Ext(file.Name()) == ".txt" {
 			outputfileHtml := strings.Split(file.Name(), ".")[0] + ".html"
-			txtFile := strings.Split(file.Name(), ".")[0]
+			txtFile := file.Name()
 			fileData := readFile(txtFile)
 			header := fileData[0]
 			//Setup paragraphs for body content
