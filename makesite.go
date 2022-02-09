@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -24,15 +25,37 @@ func readFile(fileName string) []string {
 	return (strings.Split(string(fileContents), "\n"))
 }
 
-func savePage(newFileName string) {
-
+func savePageToHtml(newFileName string) {
+	if filepath.Ext(newFileName) == ".txt" {
+		outputfileHtml := strings.Split(newFileName, ".")[0] + ".html"
+		txtFile := newFileName
+		fileData := readFile(txtFile)
+		header := fileData[0]
+		//Setup paragraphs for body content
+		var bodyContent []para
+		for count := 1; count < len(fileData); count++ {
+			if fileData[count] != "" {
+				fmt.Println(fileData[count])
+				newPara := para{Data: fileData[count]}
+				bodyContent = append(bodyContent, newPara)
+			}
+		}
+		//initialize content struct for passing to template
+		structuredContent := Content{Header: header, Paragraphs: bodyContent}
+		templateParse := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
+		newFile, err := os.Create(outputfileHtml)
+		if err != nil {
+			  panic(err)
+		}
+		templateParse.Execute(newFile, structuredContent)
+	}
 }
 
 func main() {
 	dirFlag := flag.String("dir", "..", "Directory to parse for txt files")
 
 	//use flag to get input data
-	fileToRead := flag.String("file", "first-post.txt", "File to parse to html")
+	fileToRead := flag.String("file", "first-post.txt", "Single file to parse to html")
 	flag.Parse()
 	//output all txt files in current directory
 	directory := *dirFlag
@@ -41,50 +64,10 @@ func main() {
 		panic(err)
 	}
 	for _, file := range files {
-		if filepath.Ext(file.Name()) == ".txt" {
-			outputfileHtml := strings.Split(file.Name(), ".")[0] + ".html"
-			txtFile := file.Name()
-			fileData := readFile(txtFile)
-			header := fileData[0]
-			//Setup paragraphs for body content
-			var bodyContent []para
-			for count := 1; count < len(fileData); count++ {
-				newPara := para{Data: fileData[count]}
-				bodyContent = append(bodyContent, newPara)
-			}
-		
-			//initialize content struct for passing to template
-			structuredContent := Content{Header: header, Paragraphs: bodyContent}
-			templateParse := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
-			newFile, err := os.Create(outputfileHtml)
-			if err != nil {
-				  panic(err)
-			}
-			templateParse.Execute(newFile, structuredContent)
-		}
+		savePageToHtml(file.Name())
 	}
 	//generate output file name
-	outputFileMinusExt := strings.Split(*fileToRead, ".")[0]
-	outputFile := outputFileMinusExt + ".html"
+	outputFile := *fileToRead
+	savePageToHtml(outputFile)
 
-	fileData := readFile(*fileToRead)
-	//Setup header
-	header := fileData[0]
-	//Setup paragraphs for body content
-	var bodyContent []para
-	for count := 1; count < len(fileData); count++ {
-		newPara := para{Data: fileData[count]}
-		bodyContent = append(bodyContent, newPara)
-	}
-
-	//initialize content struct for passing to template
-	structuredContent := Content{Header: header, Paragraphs: bodyContent}
-	
-	//parse template and write to a new html file with data injected to template
-	templateParse := template.Must(template.New("template.tmpl").ParseFiles("template.tmpl"))
-	newFile, err := os.Create(outputFile)
-	if err != nil {
-		  panic(err)
-	}
-	templateParse.Execute(newFile, structuredContent)
 }
