@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"os"
@@ -85,7 +86,6 @@ func savePageToHtml(newFileName string) {
 }
 
 func main() {
-
 	//decare dir flag
 	dirFlag := flag.String("dir", ".", "Directory to parse for txt files")
 
@@ -95,25 +95,42 @@ func main() {
 	//declare md flag
 	mdFlag := flag.String("md", "testreadme.md", "Single md doc to be rendered to HTML")
 
-	
 	flag.Parse()
 
 	//save mdToHTML result to variable
-	mdToHtml(*mdFlag)
-
-
+	if *mdFlag != "testreadme.md" {
+		mdToHtml(*mdFlag)
+		os.Exit(0)
+	}
 	//output all txt files in current directory
 	directory := *dirFlag
-	files, err := ioutil.ReadDir(directory)
-	if err != nil {
-		panic(err)
+	if *dirFlag != "." {
+		files, err := ioutil.ReadDir(directory)
+		if err != nil {
+			panic(err)
+		}
+		for _, file := range files {
+			savePageToHtml(file.Name())
+		}
+		os.Exit(0)
 	}
-	for _, file := range files {
-		savePageToHtml(file.Name())
+	//generate output file name
+	if *fileToRead != "first-post.txt" {
+		outputFile := *fileToRead
+		savePageToHtml(outputFile)
+		os.Exit(0)
 	}
 
-	//generate output file name
+	//default operation if no flags passed
+	fmt.Println("No flags passed, performing all operations on default values")
+	mdToHtml(*mdFlag)
+	files, err := ioutil.ReadDir(directory)
+		if err != nil {
+			panic(err)
+		}
+		for _, file := range files {
+			savePageToHtml(file.Name())
+		}
 	outputFile := *fileToRead
 	savePageToHtml(outputFile)
-
 }
